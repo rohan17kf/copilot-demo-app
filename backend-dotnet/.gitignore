@@ -32,3 +32,8 @@ PublishOutputs/
 *.nupkg
 .nuget/
 
+# Database files
+*.db
+*.db-shm
+*.db-wal
+

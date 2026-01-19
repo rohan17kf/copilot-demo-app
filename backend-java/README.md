@@ -2,7 +2,78 @@
 
 ## Overview
 
-A small Spring Boot demo application (Maven). The project is configured to use Java 17 and serves HTTP endpoints via Spring Web. The default server port is `8080` (see `src/main/resources/application.properties`).
+Spring Boot REST service for product search and analytics (CESAI-10 feature).
+
+**Service Type**: Read-only product catalog API (Java service in multi-service architecture)  
+**Port**: `8080` (proxied via API Gateway at `localhost:3000/api/v1/`)  
+**Technology**: Spring Boot 3.x, Java 17, RESTful API
+
+This service is responsible for:
+- Product search with filtering and full-text capabilities
+- Product catalog queries (read-only)
+- Category-based navigation
+- Analytics and reporting
+- Eventual consistency with .NET service via MongoDB read-replica
+
+**Note**: All write operations (CREATE, UPDATE, DELETE) are handled by the .NET service. This service implements search and read operations only.
+
+## API Endpoints
+
+| Method | Endpoint | Purpose |
+|--------|----------|---------|
+| `GET` | `/api/v1/products` | Get all products with pagination |
+| `GET` | `/api/v1/products/{productId}` | Get single product by ID |
+| `GET` | `/api/v1/search` | Search products with filters |
+| `GET` | `/api/v1/products/category/{category}` | Get products by category |
+| `GET` | `/api/v1/health` | Health check |
+
+### Example Requests
+
+**Get Products with Pagination**
+```bash
+curl "http://localhost:8080/api/v1/products?page=1&pageSize=20&sortBy=name&sortOrder=asc"
+```
+
+**Search Products**
+```bash
+curl "http://localhost:8080/api/v1/search?query=laptop&category=Electronics&minPrice=500&maxPrice=1500&inStock=true"
+```
+
+**Get Single Product**
+```bash
+curl "http://localhost:8080/api/v1/products/{productId}"
+```
+
+## Response Format
+
+All endpoints return paginated responses with metadata:
+
+```json
+{
+  "data": [
+    {
+      "id": "uuid",
+      "name": "Product Name",
+      "price": 99.99,
+      "category": "Electronics",
+      "status": "ACTIVE",
+      "stockQuantity": 50
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "pageSize": 20,
+    "totalCount": 150,
+    "totalPages": 8
+  },
+  "_metadata": {
+    "cached": true,
+    "cacheAge": "120s",
+    "source": "mongodb",
+    "dataFreshness": "current"
+  }
+}
+```
 
 ## Prerequisites 🔧
 
@@ -12,10 +83,15 @@ A small Spring Boot demo application (Maven). The project is configured to use J
 
 ## Project layout 📁
 
-- `pom.xml` — Maven project file (Java 17 is configured)
-- `src/main/java` — application source code
-- `src/main/resources/application.properties` — configuration (server.port)
-- `target/` — artifact output after running `mvn package`
+- `pom.xml` — Maven project file (Java 17 configured)
+- `src/main/java/com/labs/copilot/`
+  - `BackendJavaApplication.java` — Main application entry point
+  - `model/` — Product entity and enums
+  - `service/` — ProductService with search logic
+  - `controller/` — ProductController with REST endpoints
+  - `dto/` — Response DTOs (PaginatedResponse, ErrorResponse, etc.)
+- `src/main/resources/application.properties` — Configuration
+- `target/` — Build output
 
 ## Build & Run ⚙️
 

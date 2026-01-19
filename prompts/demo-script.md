@@ -32,7 +32,7 @@
 - **Prompts**:
   - "Create `docs/REQUIREMENTS.md` with functional and non-functional requirements for the Product feature and acceptance criteria."
     - "Break the REQUIREMENTS into JIRA Epics → User Stories → Subtasks and produce `docs/JIRA_BREAKDOWN.md` with story points and acceptance criteria."
-      - "Update 'prompts/create_issues.md' to create a JIRA Epic named '{EPIC_NAME}' in project '{JIRA_PROJECT_NAME}', add Stories linked to that Epic, and create Subtasks for implementation and testing with acceptance criteria."
+      - "Refer #docs/JIRA_BREAKDOWM.md and create a JIRA user stories with sub tasks and acceptance criteria for epic named '{EPIC_NAME}' in project '{JIRA_PROJECT_NAME}', add Stories linked to that Epic and sub tasks linked to stories"
 
 ## Phase 3: Architecture & Design
 
